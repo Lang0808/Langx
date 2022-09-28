@@ -1,0 +1,37 @@
+syntax="proto3";
+
+option go_package="./GrpcUserService";
+
+message LoginUserRequest {
+    string Username=1;
+    string Password=2;
+}
+
+message LoginUserResponse {
+    int32 ErrorCode=1;
+    int32 UserId=2;
+}
+
+message RegisterUserRequest {
+    string FullName=1;
+    string Password=2;
+    string Email=3;
+    string Username=4;
+    string Gender=5;
+    bool Blocked=6;
+    int64 DateCreated=7;
+    int64 DateUpdated=8;
+}
+
+message RegisterUserResponse {
+    int32 ErrorCode=1;
+    int32 UserId=2;
+}
+
+service UserService {
+    rpc LoginUser(LoginUserRequest) returns (LoginUserResponse);
+    rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse);
+}
+
+
+
