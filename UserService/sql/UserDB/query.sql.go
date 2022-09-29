@@ -35,3 +35,25 @@ VALUES
 func (q *Queries) CreateUser(ctx context.Context, username string) (sql.Result, error) {
 	return q.db.ExecContext(ctx, createUser, username)
 }
+
+const getPassword = `-- name: GetPassword :one
+SELECT userid, password FROM passwords WHERE UserId=?
+`
+
+func (q *Queries) GetPassword(ctx context.Context, userid sql.NullInt32) (Password, error) {
+	row := q.db.QueryRowContext(ctx, getPassword, userid)
+	var i Password
+	err := row.Scan(&i.Userid, &i.Password)
+	return i, err
+}
+
+const getUser = `-- name: GetUser :one
+SELECT id, username FROM users WHERE username=?
+`
+
+func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUser, username)
+	var i User
+	err := row.Scan(&i.ID, &i.Username)
+	return i, err
+}

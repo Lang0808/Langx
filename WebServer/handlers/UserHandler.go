@@ -27,3 +27,18 @@ func (h *UserHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(returnString)
 	fmt.Fprintf(w, returnString)
 }
+
+func (h *UserHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
+	username := r.FormValue("Username")
+	password := r.FormValue("Password")
+	request := GrpcUserService.LoginUserRequest{
+		Username: username,
+		Password: password,
+	}
+
+	res := h.UserServiceModel.LoginUser(&request)
+	fmt.Printf("%v %v\n", res.UserId, res.ErrorCode)
+	returnString := _struct.GetReturnStringLoginUserResponse(*res)
+	fmt.Println(returnString)
+	fmt.Fprintf(w, returnString)
+}

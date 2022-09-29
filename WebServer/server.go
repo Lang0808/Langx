@@ -16,10 +16,14 @@ func main() {
 	// pathHandler := handlers.PathHandler{}
 
 	http.HandleFunc("/api/RegisterUser", userHandler.RegisterUser)
+	http.HandleFunc("/api/LoginUser", userHandler.LoginUser)
 	dir, _ := os.Getwd()
 	fmt.Println("current path :" + dir)
-	http.Handle("/", http.StripPrefix("/Register/", http.FileServer(http.Dir("./FE/Register"))))
+	// http.Handle("/Register/", http.FileServer(http.Dir("./FE/Register")))
+	// http.Handle("/", http.StripPrefix("/Login/", http.FileServer(http.Dir("./FE/Login"))))
 	// http.HandleFunc("/", pathHandler.InvalidPath)
+
+	http.HandleFunc("/", serveFiles)
 
 	port := Config.GetConfig("port")
 	fmt.Printf("Create server at %v\n", port)
@@ -27,4 +31,11 @@ func main() {
 		log.Fatalf("Error when listen and serve\n")
 		log.Fatal(err)
 	}
+}
+
+func serveFiles(w http.ResponseWriter, r *http.Request) {
+	fmt.Println(r.URL.Path)
+	p := "./FE" + r.URL.Path
+	fmt.Println(p)
+	http.ServeFile(w, r, p)
 }

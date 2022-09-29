@@ -76,3 +76,29 @@ func (u *UserDBModel) RegisterUser(context context.Context, request _struct.Regi
 	}
 	return errors.SUCCESS, int32(lastInsertId), nil
 }
+
+func (u *UserDBModel) LoginUser(ctx context.Context, request _struct.LoginUserParams) (int32, *_struct.LoginUserReturn) {
+	ans := &_struct.LoginUserReturn{
+		UserId:   -1,
+		Username: "",
+	}
+	user, err := u.Queries.GetUser(ctx, request.Username)
+	if err != nil {
+		return errors.ERROR_WHEN_GET_USER, ans
+	}
+	password, err := u.Queries.GetPassword(ctx, user.ID)
+	if err != nil {
+		return errors.ERROR_WHEN_GET_PASSWORD, ans
+	}
+	if equals(password, request.Password) {
+		return errors.SUCCESS, &_struct.LoginUserReturn{
+			UserId:   user.ID.Int32,
+			Username: user.Username,
+		}
+	}
+	return errors.PASSWORD_INCORRECT, ans
+}
+
+func equals(password UserDB.Password, password2 string) bool {
+	return password.Password == password2
+}

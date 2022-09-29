@@ -1,7 +1,6 @@
 package GrpcUserService
 
 import (
-	"UserService/errors"
 	"UserService/sql/models"
 	_struct "UserService/struct"
 	"context"
@@ -13,10 +12,18 @@ type ZUserServiceServer struct {
 }
 
 func (s ZUserServiceServer) LoginUser(ctx context.Context, request *LoginUserRequest) (*LoginUserResponse, error) {
-	return &LoginUserResponse{
-		UserId:    -1,
-		ErrorCode: errors.UNSUPPORTED,
-	}, nil
+	fmt.Println(request)
+	params := _struct.LoginUserParams{
+		Username: request.Username,
+		Password: request.Password,
+	}
+	ErrorCode, LoginUserReturn := s.UserDBModel.LoginUser(ctx, params)
+	fmt.Printf("%v %v\n", ErrorCode, LoginUserReturn)
+	res := LoginUserResponse{
+		UserId:    LoginUserReturn.UserId,
+		ErrorCode: ErrorCode,
+	}
+	return &res, nil
 }
 func (s ZUserServiceServer) RegisterUser(ctx context.Context, request *RegisterUserRequest) (*RegisterUserResponse, error) {
 	fmt.Println(request)
