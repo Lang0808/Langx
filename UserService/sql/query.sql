@@ -1,7 +1,7 @@
 -- name: CreateUser :execresult
-INSERT INTO users (username)
+INSERT INTO users (username, isAdmin)
 VALUES
-(?);
+(?, ?);
 
 -- name: AddPassword :exec
 INSERT INTO passwords (UserId, Password)

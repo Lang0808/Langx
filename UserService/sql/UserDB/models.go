@@ -16,4 +16,5 @@ type Password struct {
 type User struct {
 	ID       sql.NullInt32
 	Username string
+	Isadmin  interface{}
 }

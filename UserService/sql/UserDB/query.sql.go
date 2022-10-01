@@ -27,13 +27,18 @@ func (q *Queries) AddPassword(ctx context.Context, arg AddPasswordParams) error 
 }
 
 const createUser = `-- name: CreateUser :execresult
-INSERT INTO users (username)
+INSERT INTO users (username, isAdmin)
 VALUES
-(?)
+(?, ?)
 `
 
-func (q *Queries) CreateUser(ctx context.Context, username string) (sql.Result, error) {
-	return q.db.ExecContext(ctx, createUser, username)
+type CreateUserParams struct {
+	Username string
+	Isadmin  interface{}
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, createUser, arg.Username, arg.Isadmin)
 }
 
 const getPassword = `-- name: GetPassword :one
@@ -48,12 +53,12 @@ func (q *Queries) GetPassword(ctx context.Context, userid sql.NullInt32) (Passwo
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, username FROM users WHERE username=?
+SELECT id, username, isadmin FROM users WHERE username=?
 `
 
 func (q *Queries) GetUser(ctx context.Context, username string) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUser, username)
 	var i User
-	err := row.Scan(&i.ID, &i.Username)
+	err := row.Scan(&i.ID, &i.Username, &i.Isadmin)
 	return i, err
 }

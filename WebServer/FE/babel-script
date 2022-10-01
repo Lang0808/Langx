@@ -1,1 +1,1 @@
-npx babel --presets react Login/src --out-dir Login
+npx babel --presets react CreatePost/src --watch --out-dir CreatePost

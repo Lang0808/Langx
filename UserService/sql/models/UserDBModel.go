@@ -51,7 +51,11 @@ func (u *UserDBModel) RegisterUser(context context.Context, request _struct.Regi
 	}
 	defer tx.Rollback()
 	qtx := u.Queries.WithTx(tx)
-	res, err := qtx.CreateUser(context, request.Username)
+	params := UserDB.CreateUserParams{
+		Username: request.Username,
+		Isadmin:  request.IsAdmin,
+	}
+	res, err := qtx.CreateUser(context, params)
 	if err != nil {
 		return errors.ERROR_WHEN_SAVE_USER, -1, nil
 	}
@@ -94,6 +98,7 @@ func (u *UserDBModel) LoginUser(ctx context.Context, request _struct.LoginUserPa
 		return errors.SUCCESS, &_struct.LoginUserReturn{
 			UserId:   user.ID.Int32,
 			Username: user.Username,
+			IsAdmin:  ans.IsAdmin,
 		}
 	}
 	return errors.PASSWORD_INCORRECT, ans

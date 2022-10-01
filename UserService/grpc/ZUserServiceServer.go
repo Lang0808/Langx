@@ -30,6 +30,7 @@ func (s ZUserServiceServer) RegisterUser(ctx context.Context, request *RegisterU
 	params := _struct.RegisterUserParams{
 		Username: request.Username,
 		Password: request.Password,
+		IsAdmin:  0,
 	}
 	ErrorCode, UserID, _ := s.UserDBModel.RegisterUser(ctx, params)
 	fmt.Printf("%v %v\n", ErrorCode, UserID)
